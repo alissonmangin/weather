@@ -1,4 +1,5 @@
 import React from 'react'
+import {mocksWeather} from '../mocks/mocksWeather.js';
 
 function Weather() {
     return (
