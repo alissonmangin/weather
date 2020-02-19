@@ -1,47 +1,68 @@
-import React from 'react';
-// import {mocksWeather} from '../mocks/mocksWeather.js';
-import {useState, useEffect} from 'react';
-import {getWeather} from '../actions/weatherAction.js';
+import React, { useState, useEffect } from 'react'
+import { recupere_la_meteo, recupere_la_meteo_ville } from '../actions/weatherAction'
 
 function Weather() {
-
-    // const [weather, setWeather] = useState(mocksWeather);
     const [weather, setWeather] = useState(null);
+    const [ville, setVille] = useState("Luneville");
 
-    
-    useEffect(()=>{
-        loadWeatherData();
-    }, [])
+    useEffect(() => {
+        chargement_de_la_meteo_ville(ville);
+    }, [ville]);
 
-    function kelToCel(tempKel){
-        return Math.round(tempKel - 273.15);
+    useEffect(() => {
+        // Mise à jour de la page au changement du state que si ville est modifiée
+        chargement_de_la_meteo();
+    }, []);
+
+
+    function changement_ville(ville) {
+        setVille(ville);
     }
 
-    async function loadWeatherData(){
-        const weatherAjax = await getWeather();
-        setWeather(weatherAjax.data);
+
+    function kelvin_to_celsuis(tempK) {
+        return Math.round(tempK - 273.15);
     }
 
-    function changeIcon(idIcon){
-        return "http://openweathermap.org/img/wn/"+idIcon+"@2x.png";
+    function icon(ic) {
+        return "http://openweathermap.org/img/wn/" + ic + "@2x.png"
+    }
+
+    async function chargement_de_la_meteo_ville(ville) {
+        const meteo = await recupere_la_meteo_ville(ville);
+        setWeather(meteo.data);
+    }
+async function chargement_de_la_meteo() {
+        const meteo = await recupere_la_meteo();
+        setWeather(meteo.data);
     }
 
     return (
-        
         <div>
-            {
-                weather ? 
+            <h1>Météo</h1>
+            <form>
+                <label>
+                    Nom :
+                         <input type="text" name="name" onChange={(event) => { changement_ville(event.target.value) }} />
+                </label>
+            </form>
+            {weather ?
                 <div>
-                    <h1> YOLO MÉTÉO</h1>
-                    <img alt="" src={changeIcon(weather.weather[0].icon)}></img>
-                    Ville: {weather.name}<br/>
-                    Température: {kelToCel(weather.main.temp)}°C<br/>
-                    Description: {weather.weather[0].description}<br/>
+<img src={icon(weather.weather[0].icon)}></img>
+                    {weather.name}
+                    <p>{weather.weather[0].description}</p>
+                    <p> Humidité : {weather.main.humidity} %</p>
+                    <p> {kelvin_to_celsuis(weather.main.temp)} C°</p>
+                    <p> T° ressentie : {kelvin_to_celsuis(weather.main.feels_like)} C°</p>
+                    <p> Vitesse du vent : {weather.wind.speed}</p>
                 </div>
-                : <h1>Météo en attente de chargement</h1>
+                :
+                <div>
+                    <h1>Attente de chargement de la météo</h1>
+                </div>
             }
+
         </div>
     )
 }
-
 export default Weather

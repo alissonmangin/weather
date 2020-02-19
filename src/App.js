@@ -9,7 +9,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src="sun.png" className="App-logo" alt="logo" />
-        <Weather/>
+        <Weather ville="Paris"/>
       </header>
     </div>
   );
