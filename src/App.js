@@ -8,8 +8,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Weather/>
         <img src="sun.png" className="App-logo" alt="logo" />
+        <Weather/>
       </header>
     </div>
   );
