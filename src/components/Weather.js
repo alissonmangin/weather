@@ -3,7 +3,7 @@ import { recupere_la_meteo, recupere_la_meteo_ville } from '../actions/weatherAc
 
 function Weather() {
     const [weather, setWeather] = useState(null);
-    const [ville, setVille] = useState("Luneville");
+    const [ville, setVille] = useState("Paris");
 
     useEffect(() => {
         chargement_de_la_meteo_ville(ville);
@@ -32,29 +32,30 @@ function Weather() {
         const meteo = await recupere_la_meteo_ville(ville);
         setWeather(meteo.data);
     }
-async function chargement_de_la_meteo() {
+    async function chargement_de_la_meteo() {
         const meteo = await recupere_la_meteo();
         setWeather(meteo.data);
     }
 
     return (
         <div>
-            <h1>Météo</h1>
-            <form>
-                <label>
-                    Nom :
-                         <input type="text" name="name" onChange={(event) => { changement_ville(event.target.value) }} />
-                </label>
-            </form>
+
             {weather ?
                 <div>
-<img src={icon(weather.weather[0].icon)}></img>
-                    {weather.name}
-                    <p>{weather.weather[0].description}</p>
-                    <p> Humidité : {weather.main.humidity} %</p>
-                    <p> {kelvin_to_celsuis(weather.main.temp)} C°</p>
-                    <p> T° ressentie : {kelvin_to_celsuis(weather.main.feels_like)} C°</p>
-                    <p> Vitesse du vent : {weather.wind.speed}</p>
+                    <h1>{weather.name}</h1>
+                    <form>
+                        <label>
+                            Ville :
+                         <input type="text" name="name" onChange={(event) => { changement_ville(event.target.value) }} />
+                        </label>
+                    </form>
+                    <img src={icon(weather.weather[0].icon)}></img><br />
+                    
+                    <p>Description : {weather.weather[0].description}</p>
+                    <p> Taux d'humidité : {weather.main.humidity} %</p>
+                    <p> Température : {kelvin_to_celsuis(weather.main.temp)} C°</p>
+                    <p> Température ressentie : {kelvin_to_celsuis(weather.main.feels_like)} C°</p>
+                    <p> Vitesse du vent : {weather.wind.speed} m/s</p>
                 </div>
                 :
                 <div>
